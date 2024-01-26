@@ -18,15 +18,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val textView = findViewById<TextView>(R.id.textview)
 
-        Observable.interval(1, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
+        Observable.combineLatest(
+            Observable.error<Int>(Exception("error 1")),
+            Observable.error<Int>(Exception("error 2")),
+        ) { t1, t2 -> "$t1 -- $t2" }
             .subscribe(
-                { value ->
-                    textView.text = "Interval: $value"
-                }
+                { Log.d("RxJava", "OnNext: $it") },
+                { Log.e("RxJava", "OnError in subscribe", it) },
             )
+
+//        val textView = findViewById<TextView>(R.id.textview)
+    //        Observable.interval(1, TimeUnit.SECONDS)
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                { value ->
+//                    textView.text = "Interval: $value"
+//                }
+//            )
 
         //Rx-цепочка
 
